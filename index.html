@@ -59,6 +59,13 @@
         .prev { left: 10px; }
         .next { right: 10px; }
 
+        /* Add styles for disabled buttons */
+        .nav-button.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
         .carousel-dots {
           display: flex;
           justify-content: center;
@@ -81,7 +88,7 @@
 </head>
 <body>
     <div class="carousel-container">
-      <button class="nav-button prev" onclick="moveCarousel(-1)">❮</button>
+      <button class="nav-button prev" onclick="moveCarousel(-1)" id="prevButton">❮</button>
       <div class="carousel-wrapper">
         <div class="carousel" id="carousel">
           <div class="carousel-item">
@@ -98,7 +105,7 @@
           </div>
         </div>
       </div>
-      <button class="nav-button next" onclick="moveCarousel(1)">❯</button>
+      <button class="nav-button next" onclick="moveCarousel(1)" id="nextButton">❯</button>
       <div class="carousel-dots" id="dots"></div>
     </div>
 
@@ -107,6 +114,8 @@
         const carousel = document.getElementById('carousel');
         const items = document.querySelectorAll('.carousel-item');
         const dotsContainer = document.getElementById('dots');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
 
         // Create dots
         items.forEach((_, index) => {
@@ -116,6 +125,15 @@
           dotsContainer.appendChild(dot);
         });
 
+        function updateNavigationButtons() {
+            // Disable prev button if on first slide
+            prevButton.classList.toggle('disabled', currentIndex === 0);
+    
+            // Disable next button if on last slide
+            nextButton.classList.toggle('disabled', currentIndex === items.length - 1);
+        }
+
+        
         function moveCarousel(direction) {
           currentIndex = (currentIndex + direction + items.length) % items.length;
           updateCarousel();
@@ -131,7 +149,12 @@
           document.querySelectorAll('.dot').forEach((dot, index) => {
             dot.className = `dot ${index === currentIndex ? 'active' : ''}`;
           });
+            // Update navigation buttons
+            updateNavigationButtons();           
         }
+
+        // Initialize button states
+        updateNavigationButtons();
     </script>
 </body>
 </html>
